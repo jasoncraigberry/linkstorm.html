@@ -1,73 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Start Earning Now</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 50px;
-      background: #f4f4f4;
-      color: #333;
-    }
-    h1 {
-      font-size: 2em;
-      margin-bottom: 20px;
-    }
-    p {
-      font-size: 1.1em;
-      margin-bottom: 30px;
-    }
-    .btn {
-      display: inline-block;
-      background: #007bff;
-      color: #fff;
-      padding: 20px 40px;
-      font-size: 1.2em;
-      text-decoration: none;
-      border-radius: 10px;
-      transition: background 0.3s;
-      margin-top: 20px;
-    }
-    .btn:hover {
-      background: #0056b3;
-    }
-    .tip {
-      margin-top: 20px;
-      font-size: 0.9em;
-      color: #555;
-    }
-    .countdown {
-      font-size: 1.2em;
-      color: #007bff;
-      margin-top: 20px;
-    }
-  </style>
-  <script>
-    let countdown = 5; // seconds
-    function updateCountdown() {
-      if(countdown > 0) {
-        document.getElementById("countdown").innerText = countdown;
-        countdown--;
-        setTimeout(updateCountdown, 1000);
-      } else {
-        window.location.href = "http://054ii.com/link?z=10382058";
-      }
-    }
-    window.onload = updateCountdown;
-  </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Start Earning Now</title>
+<style>
+body { font-family: Arial; text-align:center; padding:50px; background:#f4f4f4; }
+h1 { font-size:2em; margin-bottom:20px; }
+p { font-size:1.2em; }
+a.btn { display:inline-block; background:#007bff; color:#fff; padding:20px 40px; font-size:1.2em; text-decoration:none; border-radius:10px; margin-top:20px; }
+a.btn:hover { background:#0056b3; }
+.tip { margin-top:20px; font-size:0.9em; color:#555; }
+</style>
+<script>
+let countdown = 5;
+const smartLink = "https://lakns.com/link?z=10382058&var={SOURCE_ID}&ymid={CLICK_ID}";
+
+function isTelegram() {
+  return /Telegram/i.test(navigator.userAgent);
+}
+
+function updateCountdown(){
+  if(countdown>0){
+    document.getElementById("countdown").innerText = countdown;
+    countdown--;
+    setTimeout(updateCountdown,1000);
+  } else {
+    redirect();
+  }
+}
+
+function redirect(){
+  if(isTelegram()){
+    // Telegram WebView sometimes blocks automatic redirects
+    document.getElementById("redirect-msg").style.display = "block";
+  } else {
+    window.location.href = smartLink;
+  }
+}
+
+window.onload = updateCountdown;
+</script>
 </head>
 <body>
-  <h1>🚀 Start Earning Now!</h1>
-  <p>You are being redirected to your offer in <span class="countdown" id="countdown">5</span> seconds...</p>
+<h1>🚀 Start Earning Now!</h1>
+<p>Redirecting in <span id="countdown">5</span> seconds...</p>
 
-  <!-- Backup button -->
-  <a class="btn" href="http://054ii.com/link?z=10382058" target="_blank" rel="noopener noreferrer">
-    Click Here if Not Redirected
-  </a>
+<!-- Backup button -->
+<a class="btn" href="https://lakns.com/link?z=10382058&var={SOURCE_ID}&ymid={CLICK_ID}" target="_blank" rel="noopener noreferrer">
+Click Here if Not Redirected
+</a>
 
-  <p class="tip">💡 Tip: On mobile, long-press the button and select "Open in Browser" if it doesn’t open automatically.</p>
+<!-- Telegram WebView message -->
+<p class="tip" id="redirect-msg" style="display:none;">
+⚠️ If the redirect does not work in Telegram, please click the button above or open in your browser manually.
+</p>
 </body>
 </html>
