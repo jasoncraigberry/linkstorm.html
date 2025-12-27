@@ -5,55 +5,123 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Start Earning Now</title>
 <style>
-body { font-family: Arial; text-align:center; padding:50px; background:#f4f4f4; }
-h1 { font-size:2em; margin-bottom:20px; }
-p { font-size:1.2em; }
-a.btn { display:inline-block; background:#007bff; color:#fff; padding:20px 40px; font-size:1.2em; text-decoration:none; border-radius:10px; margin-top:20px; }
-a.btn:hover { background:#0056b3; }
-.tip { margin-top:20px; font-size:0.9em; color:#555; }
+body { font-family: Arial, sans-serif; text-align: center; padding: 50px 20px; background: #f4f4f4; color: #333; }
+h1 { font-size: 2.2em; margin-bottom: 15px; }
+p { font-size: 1.2em; margin-bottom: 15px; }
+a.btn { display: inline-block; background: #007bff; color: #fff; padding: 18px 40px; font-size: 1.2em; text-decoration: none; border-radius: 12px; margin-top: 20px; transition: background 0.3s, transform 0.2s; }
+a.btn:hover { background: #0056b3; transform: scale(1.05); }
+.tip { margin-top: 15px; font-size: 0.95em; color: #555; }
+#progress-container { width: 80%; background: #ddd; border-radius: 12px; margin: 20px auto; height: 22px; overflow: hidden; }
+#progress-bar { height: 100%; width: 0%; background: #007bff; border-radius: 12px; transition: width 0.1s linear; }
+@media (max-width: 600px) {
+  body { padding: 30px 15px; }
+  h1 { font-size: 1.8em; }
+  a.btn { font-size: 1.1em; padding: 16px 30px; }
+}
 </style>
 <script>
+// Countdown
 let countdown = 5;
-const smartLink = "https://lakns.com/link?z=10382058&var={SOURCE_ID}&ymid={CLICK_ID}";
 
+// Detect Telegram WebView
 function isTelegram() {
   return /Telegram/i.test(navigator.userAgent);
 }
 
+// Detect device type
+function isMobile() {
+  return /Mobi|Android/i.test(navigator.userAgent);
+}
+
+// Country-specific and device-specific SmartLink pools
+const countryLinks = {
+  "US": {
+    "mobile": [
+      { url: "https://lakns.com/link?z=10382058&var={SOURCE_ID}&ymid={CLICK_ID}", weight: 3 },
+      { url: "https://lakns.com/link?z=10382035&var={SOURCE_ID}&ymid={CLICK_ID}", weight: 1 }
+    ],
+    "desktop": [
+      { url: "https://lakns.com/link?z=10382060&var={SOURCE_ID}&ymid={CLICK_ID}", weight: 2 },
+      { url: "https://lakns.com/link?z=10382050&var={SOURCE_ID}&ymid={CLICK_ID}", weight: 1 }
+    ]
+  },
+  "default": {
+    "mobile": [
+      { url: "https://lakns.com/link?z=10382050&var={SOURCE_ID}&ymid={CLICK_ID}", weight: 2 },
+      { url: "https://lakns.com/link?z=10382060&var={SOURCE_ID}&ymid={CLICK_ID}", weight: 1 }
+    ],
+    "desktop": [
+      { url: "https://lakns.com/link?z=10382035&var={SOURCE_ID}&ymid={CLICK_ID}", weight: 2 },
+      { url: "https://lakns.com/link?z=10382058&var={SOURCE_ID}&ymid={CLICK_ID}", weight: 1 }
+    ]
+  }
+};
+
+// Placeholder for user country; replace with real geo detection if needed
+let userCountry = "default";
+
+// Pick weighted random link
+function pickLink(links) {
+  const totalWeight = links.reduce((sum,l) => sum + l.weight,0);
+  let rand = Math.random() * totalWeight;
+  for(let l of links){
+    if(rand < l.weight) return l.url;
+    rand -= l.weight;
+  }
+  return links[0].url;
+}
+
+// Select proper pool based on device
+const pool = countryLinks[userCountry] ? (isMobile() ? countryLinks[userCountry].mobile : countryLinks[userCountry].desktop) : countryLinks["default"][isMobile() ? "mobile" : "desktop"];
+const selectedLink = pickLink(pool);
+
+// Countdown + progress bar
 function updateCountdown(){
-  if(countdown>0){
+  if(countdown > 0){
     document.getElementById("countdown").innerText = countdown;
+    let progressPercent = ((5 - countdown) / 5) * 100;
+    document.getElementById("progress-bar").style.width = progressPercent + "%";
     countdown--;
-    setTimeout(updateCountdown,1000);
+    setTimeout(updateCountdown, 1000);
   } else {
     redirect();
   }
 }
 
+// Redirect logic
 function redirect(){
   if(isTelegram()){
-    // Telegram WebView sometimes blocks automatic redirects
     document.getElementById("redirect-msg").style.display = "block";
+    document.getElementById("redirect-instruction").style.display = "block";
+    document.getElementById("progress-bar").style.width = "100%";
   } else {
-    window.location.href = smartLink;
+    window.location.href = selectedLink;
   }
 }
 
-window.onload = updateCountdown;
+window.onload = () => {
+  document.getElementById("backup-btn").href = selectedLink;
+  updateCountdown();
+};
 </script>
 </head>
 <body>
 <h1>🚀 Start Earning Now!</h1>
 <p>Redirecting in <span id="countdown">5</span> seconds...</p>
 
-<!-- Backup button -->
-<a class="btn" href="https://lakns.com/link?z=10382058&var={SOURCE_ID}&ymid={CLICK_ID}" target="_blank" rel="noopener noreferrer">
+<div id="progress-container">
+  <div id="progress-bar"></div>
+</div>
+
+<a id="backup-btn" class="btn" href="#" target="_blank" rel="noopener noreferrer">
 Click Here if Not Redirected
 </a>
 
-<!-- Telegram WebView message -->
 <p class="tip" id="redirect-msg" style="display:none;">
-⚠️ If the redirect does not work in Telegram, please click the button above or open in your browser manually.
+⚠️ Automatic redirect may not work in Telegram.
+</p>
+<p class="tip" id="redirect-instruction" style="display:none;">
+👉 Long-press the button above and select "Open in Browser" to continue.
 </p>
 </body>
 </html>
