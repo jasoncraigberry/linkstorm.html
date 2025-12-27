@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartLink Test</title>
+<script>
+let countdown = 5;
+
+// Replace with your HTTPS SmartLink
+const smartLink = "https://lakns.com/link?z=10382058&var={SOURCE_ID}&ymid={CLICK_ID}";
+
+function updateCountdown() {
+  if (countdown > 0) {
+    document.getElementById("countdown").innerText = countdown;
+    countdown--;
+    setTimeout(updateCountdown, 1000);
+  } else {
+    window.location.href = smartLink;
+  }
+}
+
+window.onload = updateCountdown;
+</script>
+</head>
+<body>
+<h1>Redirecting in <span id="countdown">5</span> seconds...</h1>
+<p>If not redirected automatically, <a href="https://lakns.com/link?z=10382058&var={SOURCE_ID}&ymid={CLICK_ID}" target="_blank">click here</a>.</p>
+</body>
+</html>
